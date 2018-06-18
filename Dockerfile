@@ -4,7 +4,9 @@ WORKDIR /app
 
 RUN dnf install -y \
   make \
+  perl \
   pv \
+  wget \
   zip \
   ;
 

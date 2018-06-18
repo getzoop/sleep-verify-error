@@ -20,7 +20,7 @@ all: ${PACKAGE}
 ${PACKAGE}: ${BIN} 
 	mkdir -p ${PACKAGE_PATH}
 	-rm -f $@
-	zip -qr $@ appinfo bin ${LIBS_PATH} res
+	zip -qr $@ appinfo ${LIBS_PATH}
 	zip -qj $@ $<
 	ls -sh $@
 
@@ -30,27 +30,19 @@ ${BIN}: ./src/main.cc | ${CXX} ${INCLUDE} base
 	mkdir -p ${BUILD_PATH}; \
 		${CXX} -I${INCLUDE} ${CXX_FLAGS} -o $@ $< -L${PROLIN_LIBS} -L${LIBS_PATH} ${LIBS}
 
-TOOLCHAIN_URL = 'https://api.github.com/repos/getzoop/toolchains/releases/assets/7318753'
+TOOLCHAIN_URL = 'https://drive.google.com/file/d/1b3v_N5LDSYqAv5oHd5p2jTSR6djOedC4/view?usp=sharing'
 TOOLCHAIN_FILE = ./third_party/toolchain/cross-armv6l-gcc.tar.gz
 
 ${CXX}:
 ifneq ($(shell test -e $(TOOLCHAIN_FILE) && echo yes),yes)
 	@echo 'Downloading PAX S920 toolchain...';
-	@echo -n "Github username: "     ; \
-	  read USER_NAME                 ; \
-	  echo -n "Github password: "    ; \
-	  read -s PASSWORD               ; \
-	  echo                           ; \
-	  echo -n "Github 2FA token: "   ; \
-	  read TOKEN                     ; \
-	  curl --progress-bar -fLJ -o ${TOOLCHAIN_FILE} -H "X-GitHub-OTP:$$TOKEN" -H"Accept:application/octet-stream" -u $$USER_NAME:$$PASSWORD ${TOOLCHAIN_URL}
+	wget https://raw.githubusercontent.com/circulosmeos/gdown.pl/master/gdown.pl
+	perl gdown.pl "${TOOLCHAIN_URL} ${TOOLCHAIN_FILE}
 endif
-
 	@echo "Extracting ARMv6l toolchain..."
 	mkdir -p ${ARMV6_ROOT}
 	pv ./third_party/toolchain/cross-armv6l-gcc.tar.gz | tar xzp -C /
 	@echo "ARMv6l toolchain ready."
-	$(MAKE) base
 
 base:
 	@echo "Linking the base libraries..."
@@ -64,8 +56,6 @@ base:
 	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/librt.so.1 . ;\
 	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libgcc_s.so.1 . ;\
 	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libstdc++.so.6 .;
-	@echo "The base libraries make a huge AIP to install."
-	@echo "You should consider run 'make dry' if the target device already has received this base libraries."
 
 clean:
 	-rm -rf ${LIBS_PATH}
