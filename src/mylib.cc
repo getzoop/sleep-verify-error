@@ -1,5 +1,5 @@
-#include <unistd.h>
+#include <osal.h>
 
 void MySleep() {
-  sleep(10);
+  OsSleep(10000);
 }
