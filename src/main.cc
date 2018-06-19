@@ -2,7 +2,7 @@
 
 int main(void)
 {
-  MySleep();
+  my::time::MySleep();
   
   return 0;
 }
