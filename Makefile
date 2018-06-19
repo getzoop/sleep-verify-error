@@ -6,7 +6,7 @@ BUILD_PATH = ./default
 PACKAGE_PATH = ./pkg
 
 CXX := ${ARMV6_ROOT}/bin/arm-armv6l-linux-gnueabi-g++
-CXX_FLAGS := -O0 -Wall -funwind-tables -march=armv6 -fpermissive -std=c++17 -Wl,--rpath=./lib:/opt/lib:/lib:/usr/lib
+CXX_FLAGS := -O0 -Wall -funwind-tables -march=armv6 -fpermissive -std=c++17 -Wl,--rpath=./lib:/opt/lib:/lib:/usr/lib -Wl,--dynamic-link=./lib/ld-linux.so.3
 INCLUDE := ${PROLIN_SDK}/include
 PROLIN_LIBS := ${PROLIN_SDK}/lib
 BIN = ${BUILD_PATH}/${PROJECT}
