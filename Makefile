@@ -26,9 +26,14 @@ ${PACKAGE}: ${BIN}
 
 pack: ${PACKAGE}
 
-${BIN}: ./src/main.cc | ${CXX} ${INCLUDE} base
+${BIN}: ./src/main.cc ./lib/mylib.so | ${CXX} ${INCLUDE} base
 	mkdir -p ${BUILD_PATH}; \
-		${CXX} -I${INCLUDE} ${CXX_FLAGS} -o $@ $< -L${PROLIN_LIBS} -L${LIBS_PATH} ${LIBS}
+		${CXX} -I${INCLUDE} ${CXX_FLAGS} -o $@ $^ -L${PROLIN_LIBS} -L${LIBS_PATH} ${LIBS}
+
+./lib/mylib.so: ./src/mylib.cc
+	mkdir -p ./lib; \
+		${CXX} -I${INCLUDE} ${CXX_FLAGS} -fpic -shared -o $@ $< -L${PROLIN_LIBS} -L${LIBS_PATH} ${LIBS}
+
 
 TOOLCHAIN_URL = 'https://drive.google.com/file/d/1b3v_N5LDSYqAv5oHd5p2jTSR6djOedC4/view?usp=sharing'
 TOOLCHAIN_FILE = ./third_party/toolchain/cross-armv6l-gcc.tar.gz

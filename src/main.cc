@@ -1,8 +1,8 @@
-#include <osal.h>
+#include "mylib.h"
 
 int main(void)
 {
-  OsSleep(10000);
+  MySleep();
   
   return 0;
 }
