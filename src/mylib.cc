@@ -1,5 +1,6 @@
-#include <osal.h>
+#include <thread>
 
 void MySleep() {
-  OsSleep(10000);
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(10s);
 }
