@@ -6,7 +6,7 @@ BUILD_PATH = ./default
 PACKAGE_PATH = ./pkg
 
 CXX := ${ARMV6_ROOT}/bin/arm-armv6l-linux-gnueabi-g++
-CXX_FLAGS := -O0 -Wall -funwind-tables -march=armv6 -fpermissive -std=c++17 -Wl,--rpath=./lib:/opt/lib:/lib:/usr/lib -Wl,--dynamic-link=./lib/ld-linux.so.3
+CXX_FLAGS := -O0 -Wall -funwind-tables -march=armv6 -fpermissive -std=c++17 -Wl,--rpath=./bin:./lib:/opt/lib:/lib:/usr/lib -Wl,--dynamic-link=./bin/ld-linux.so.3
 INCLUDE := ${PROLIN_SDK}/include
 PROLIN_LIBS := ${PROLIN_SDK}/lib
 BIN = ${BUILD_PATH}/${PROJECT}
@@ -20,7 +20,7 @@ all: ${PACKAGE}
 ${PACKAGE}: ${BIN} 
 	mkdir -p ${PACKAGE_PATH}
 	-rm -f $@
-	zip -qr $@ appinfo ${LIBS_PATH}
+	zip -qr $@ appinfo ${LIBS_PATH} bin
 	zip -qj $@ $<
 	ls -sh $@
 
@@ -28,7 +28,7 @@ pack: ${PACKAGE}
 
 ${BIN}: ./src/main.cc ./lib/mylib.so | ${CXX} ${INCLUDE} base
 	mkdir -p ${BUILD_PATH}; \
-		${CXX} -I${INCLUDE} ${CXX_FLAGS} -o $@ $^ -L${PROLIN_LIBS} -L${LIBS_PATH} ${LIBS}
+		${CXX} -I${INCLUDE} ${CXX_FLAGS} -o $@ $^ -L${PROLIN_LIBS} -L${LIBS_PATH} -L./bin ${LIBS}
 
 ./lib/mylib.so: ./src/mylib.cc
 	mkdir -p ./lib; \
@@ -52,7 +52,7 @@ endif
 base:
 	@echo "Linking the base libraries..."
 	mkdir -p ${LIBS_PATH}
-	cd ${LIBS_PATH}; \
+	cd bin; \
 	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/ld-linux.so.3 . ;\
 	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libc.so.6 . ;\
 	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libdl.so.2 . ;\
