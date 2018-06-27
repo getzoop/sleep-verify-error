@@ -1,12 +1,13 @@
-ARMV6_ROOT ?= /opt/cross
+ROOT ?= /opt/cross
 PROLIN_SDK ?= ./third_party/prolin_sdk/
 PROJECT = Sample
 LIBS_PATH = ./lib
 BUILD_PATH = ./default
 PACKAGE_PATH = ./pkg
+TOOLCHAIN_PATH = /opt/cross/arm-armv4t-linux-gnueabi
 
-CXX := ${ARMV6_ROOT}/bin/arm-armv6l-linux-gnueabi-g++
-CXX_FLAGS := -O0 -Wall -funwind-tables -march=armv6 -fpermissive -std=c++17 -Wl,--rpath=./bin:./lib:/opt/lib:/lib:/usr/lib -Wl,--dynamic-link=./bin/ld-linux.so.3
+CXX := ${ROOT}/bin/arm-armv4t-linux-gnueabi-g++
+CXX_FLAGS := -O0 -Wall -funwind-tables -march=armv4t -fpermissive -std=c++17 -Wl,--rpath=./bin:./lib:/opt/lib:/lib:/usr/lib -Wl,--dynamic-link=./bin/ld-linux.so.3
 INCLUDE := ${PROLIN_SDK}/include
 PROLIN_LIBS := ${PROLIN_SDK}/lib
 BIN = ${BUILD_PATH}/${PROJECT}
@@ -44,8 +45,8 @@ ifneq ($(shell test -e $(TOOLCHAIN_FILE) && echo yes),yes)
 	wget https://raw.githubusercontent.com/circulosmeos/gdown.pl/master/gdown.pl
 	perl gdown.pl "${TOOLCHAIN_URL} ${TOOLCHAIN_FILE}
 endif
-	@echo "Extracting ARMv6l toolchain..."
-	mkdir -p ${ARMV6_ROOT}
+	@echo "Extracting ARMv4t toolchain..."
+	mkdir -p ${ROOT}
 	pv ./third_party/toolchain/cross-armv6l-gcc.tar.gz | tar xzp -C /
 	@echo "ARMv6l toolchain ready."
 
@@ -53,14 +54,14 @@ base:
 	@echo "Linking the base libraries..."
 	mkdir -p ${LIBS_PATH}
 	cd bin; \
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/ld-linux.so.3 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libc.so.6 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libdl.so.2 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libm.so.6 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libpthread.so.0 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/librt.so.1 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libgcc_s.so.1 . ;\
-	  ln -sf ${ARMV6_ROOT}/arm-armv6l-linux-gnueabi/lib/libstdc++.so.6 .;
+	  ln -sf ${TOOLCHAIN_PATH}/lib/ld-linux.so.3 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/libc.so.6 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/libdl.so.2 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/libm.so.6 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/libpthread.so.0 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/librt.so.1 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/libgcc_s.so.1 . ;\
+	  ln -sf ${TOOLCHAIN_PATH}/lib/libstdc++.so.6 .;
 
 clean:
 	-rm -rf ${LIBS_PATH}
